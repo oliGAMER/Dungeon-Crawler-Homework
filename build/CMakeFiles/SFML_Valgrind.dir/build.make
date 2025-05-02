@@ -69,34 +69,178 @@ include CMakeFiles/SFML_Valgrind.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/SFML_Valgrind.dir/flags.make
 
-CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
-CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o: ../main/main.cpp
-CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o -c /home/omer_unix/homework_project_2/main/main.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o: ../src/Dungeon.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o -c /home/omer_unix/homework_project_2/src/Dungeon.cpp
 
-CMakeFiles/SFML_Valgrind.dir/main/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/main/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/main/main.cpp > CMakeFiles/SFML_Valgrind.dir/main/main.cpp.i
+CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Dungeon.cpp > CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.i
 
-CMakeFiles/SFML_Valgrind.dir/main/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/main/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/main/main.cpp -o CMakeFiles/SFML_Valgrind.dir/main/main.cpp.s
+CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Dungeon.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o: ../src/DynamicArrays.cpp
+CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o -c /home/omer_unix/homework_project_2/src/DynamicArrays.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/DynamicArrays.cpp > CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/DynamicArrays.cpp -o CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o: ../src/Enemy.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o -c /home/omer_unix/homework_project_2/src/Enemy.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Enemy.cpp > CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Enemy.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o: ../src/LinkedList.cpp
+CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o -c /home/omer_unix/homework_project_2/src/LinkedList.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/LinkedList.cpp > CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/LinkedList.cpp -o CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o: ../src/Player.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o -c /home/omer_unix/homework_project_2/src/Player.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Player.cpp > CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Player.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o: ../src/Queue.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o -c /home/omer_unix/homework_project_2/src/Queue.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Queue.cpp > CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Queue.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o: ../src/Room.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o -c /home/omer_unix/homework_project_2/src/Room.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Room.cpp > CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Room.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o: ../src/Stack.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o -c /home/omer_unix/homework_project_2/src/Stack.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Stack.cpp > CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Stack.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o: ../src/Treasure.cpp
+CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o -c /home/omer_unix/homework_project_2/src/Treasure.cpp
+
+CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/src/Treasure.cpp > CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/src/Treasure.cpp -o CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.s
+
+CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o: CMakeFiles/SFML_Valgrind.dir/flags.make
+CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o: ../main/game.cpp
+CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o: CMakeFiles/SFML_Valgrind.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o -MF CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o.d -o CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o -c /home/omer_unix/homework_project_2/main/game.cpp
+
+CMakeFiles/SFML_Valgrind.dir/main/game.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SFML_Valgrind.dir/main/game.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/omer_unix/homework_project_2/main/game.cpp > CMakeFiles/SFML_Valgrind.dir/main/game.cpp.i
+
+CMakeFiles/SFML_Valgrind.dir/main/game.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SFML_Valgrind.dir/main/game.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/omer_unix/homework_project_2/main/game.cpp -o CMakeFiles/SFML_Valgrind.dir/main/game.cpp.s
 
 # Object files for target SFML_Valgrind
 SFML_Valgrind_OBJECTS = \
-"CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o"
+"CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o" \
+"CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o"
 
 # External object files for target SFML_Valgrind
 SFML_Valgrind_EXTERNAL_OBJECTS =
 
-SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Dungeon.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/DynamicArrays.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Enemy.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/LinkedList.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Player.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Queue.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Room.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Stack.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/src/Treasure.cpp.o
+SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/main/game.cpp.o
 SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/build.make
 SFML_Valgrind: /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1
 SFML_Valgrind: /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1
 SFML_Valgrind: /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
 SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable SFML_Valgrind"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable SFML_Valgrind"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SFML_Valgrind.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

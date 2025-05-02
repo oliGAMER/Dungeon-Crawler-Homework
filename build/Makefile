@@ -117,41 +117,257 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named SFML_Valgrind
+# Target rules for targets named HomeworkProject2
 
 # Build rule for target.
-SFML_Valgrind: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SFML_Valgrind
-.PHONY : SFML_Valgrind
+HomeworkProject2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HomeworkProject2
+.PHONY : HomeworkProject2
 
 # fast build rule for target.
-SFML_Valgrind/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/build
-.PHONY : SFML_Valgrind/fast
+HomeworkProject2/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/build
+.PHONY : HomeworkProject2/fast
 
-main/main.o: main/main.cpp.o
-.PHONY : main/main.o
+main/game.o: main/game.cpp.o
+.PHONY : main/game.o
 
 # target to build an object file
-main/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/main/main.cpp.o
-.PHONY : main/main.cpp.o
+main/game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/main/game.cpp.o
+.PHONY : main/game.cpp.o
 
-main/main.i: main/main.cpp.i
-.PHONY : main/main.i
+main/game.i: main/game.cpp.i
+.PHONY : main/game.i
 
 # target to preprocess a source file
-main/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/main/main.cpp.i
-.PHONY : main/main.cpp.i
+main/game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/main/game.cpp.i
+.PHONY : main/game.cpp.i
 
-main/main.s: main/main.cpp.s
-.PHONY : main/main.s
+main/game.s: main/game.cpp.s
+.PHONY : main/game.s
 
 # target to generate assembly for a file
-main/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/main/main.cpp.s
-.PHONY : main/main.cpp.s
+main/game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/main/game.cpp.s
+.PHONY : main/game.cpp.s
+
+src/Dungeon.o: src/Dungeon.cpp.o
+.PHONY : src/Dungeon.o
+
+# target to build an object file
+src/Dungeon.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Dungeon.cpp.o
+.PHONY : src/Dungeon.cpp.o
+
+src/Dungeon.i: src/Dungeon.cpp.i
+.PHONY : src/Dungeon.i
+
+# target to preprocess a source file
+src/Dungeon.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Dungeon.cpp.i
+.PHONY : src/Dungeon.cpp.i
+
+src/Dungeon.s: src/Dungeon.cpp.s
+.PHONY : src/Dungeon.s
+
+# target to generate assembly for a file
+src/Dungeon.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Dungeon.cpp.s
+.PHONY : src/Dungeon.cpp.s
+
+src/DynamicArrays.o: src/DynamicArrays.cpp.o
+.PHONY : src/DynamicArrays.o
+
+# target to build an object file
+src/DynamicArrays.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/DynamicArrays.cpp.o
+.PHONY : src/DynamicArrays.cpp.o
+
+src/DynamicArrays.i: src/DynamicArrays.cpp.i
+.PHONY : src/DynamicArrays.i
+
+# target to preprocess a source file
+src/DynamicArrays.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/DynamicArrays.cpp.i
+.PHONY : src/DynamicArrays.cpp.i
+
+src/DynamicArrays.s: src/DynamicArrays.cpp.s
+.PHONY : src/DynamicArrays.s
+
+# target to generate assembly for a file
+src/DynamicArrays.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/DynamicArrays.cpp.s
+.PHONY : src/DynamicArrays.cpp.s
+
+src/Enemy.o: src/Enemy.cpp.o
+.PHONY : src/Enemy.o
+
+# target to build an object file
+src/Enemy.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Enemy.cpp.o
+.PHONY : src/Enemy.cpp.o
+
+src/Enemy.i: src/Enemy.cpp.i
+.PHONY : src/Enemy.i
+
+# target to preprocess a source file
+src/Enemy.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Enemy.cpp.i
+.PHONY : src/Enemy.cpp.i
+
+src/Enemy.s: src/Enemy.cpp.s
+.PHONY : src/Enemy.s
+
+# target to generate assembly for a file
+src/Enemy.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Enemy.cpp.s
+.PHONY : src/Enemy.cpp.s
+
+src/LinkedList.o: src/LinkedList.cpp.o
+.PHONY : src/LinkedList.o
+
+# target to build an object file
+src/LinkedList.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/LinkedList.cpp.o
+.PHONY : src/LinkedList.cpp.o
+
+src/LinkedList.i: src/LinkedList.cpp.i
+.PHONY : src/LinkedList.i
+
+# target to preprocess a source file
+src/LinkedList.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/LinkedList.cpp.i
+.PHONY : src/LinkedList.cpp.i
+
+src/LinkedList.s: src/LinkedList.cpp.s
+.PHONY : src/LinkedList.s
+
+# target to generate assembly for a file
+src/LinkedList.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/LinkedList.cpp.s
+.PHONY : src/LinkedList.cpp.s
+
+src/Player.o: src/Player.cpp.o
+.PHONY : src/Player.o
+
+# target to build an object file
+src/Player.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Player.cpp.o
+.PHONY : src/Player.cpp.o
+
+src/Player.i: src/Player.cpp.i
+.PHONY : src/Player.i
+
+# target to preprocess a source file
+src/Player.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Player.cpp.i
+.PHONY : src/Player.cpp.i
+
+src/Player.s: src/Player.cpp.s
+.PHONY : src/Player.s
+
+# target to generate assembly for a file
+src/Player.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Player.cpp.s
+.PHONY : src/Player.cpp.s
+
+src/Queue.o: src/Queue.cpp.o
+.PHONY : src/Queue.o
+
+# target to build an object file
+src/Queue.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Queue.cpp.o
+.PHONY : src/Queue.cpp.o
+
+src/Queue.i: src/Queue.cpp.i
+.PHONY : src/Queue.i
+
+# target to preprocess a source file
+src/Queue.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Queue.cpp.i
+.PHONY : src/Queue.cpp.i
+
+src/Queue.s: src/Queue.cpp.s
+.PHONY : src/Queue.s
+
+# target to generate assembly for a file
+src/Queue.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Queue.cpp.s
+.PHONY : src/Queue.cpp.s
+
+src/Room.o: src/Room.cpp.o
+.PHONY : src/Room.o
+
+# target to build an object file
+src/Room.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Room.cpp.o
+.PHONY : src/Room.cpp.o
+
+src/Room.i: src/Room.cpp.i
+.PHONY : src/Room.i
+
+# target to preprocess a source file
+src/Room.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Room.cpp.i
+.PHONY : src/Room.cpp.i
+
+src/Room.s: src/Room.cpp.s
+.PHONY : src/Room.s
+
+# target to generate assembly for a file
+src/Room.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Room.cpp.s
+.PHONY : src/Room.cpp.s
+
+src/Stack.o: src/Stack.cpp.o
+.PHONY : src/Stack.o
+
+# target to build an object file
+src/Stack.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Stack.cpp.o
+.PHONY : src/Stack.cpp.o
+
+src/Stack.i: src/Stack.cpp.i
+.PHONY : src/Stack.i
+
+# target to preprocess a source file
+src/Stack.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Stack.cpp.i
+.PHONY : src/Stack.cpp.i
+
+src/Stack.s: src/Stack.cpp.s
+.PHONY : src/Stack.s
+
+# target to generate assembly for a file
+src/Stack.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Stack.cpp.s
+.PHONY : src/Stack.cpp.s
+
+src/Treasure.o: src/Treasure.cpp.o
+.PHONY : src/Treasure.o
+
+# target to build an object file
+src/Treasure.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Treasure.cpp.o
+.PHONY : src/Treasure.cpp.o
+
+src/Treasure.i: src/Treasure.cpp.i
+.PHONY : src/Treasure.i
+
+# target to preprocess a source file
+src/Treasure.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Treasure.cpp.i
+.PHONY : src/Treasure.cpp.i
+
+src/Treasure.s: src/Treasure.cpp.s
+.PHONY : src/Treasure.s
+
+# target to generate assembly for a file
+src/Treasure.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/src/Treasure.cpp.s
+.PHONY : src/Treasure.cpp.s
 
 # Help Target
 help:
@@ -161,10 +377,37 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... SFML_Valgrind"
-	@echo "... main/main.o"
-	@echo "... main/main.i"
-	@echo "... main/main.s"
+	@echo "... HomeworkProject2"
+	@echo "... main/game.o"
+	@echo "... main/game.i"
+	@echo "... main/game.s"
+	@echo "... src/Dungeon.o"
+	@echo "... src/Dungeon.i"
+	@echo "... src/Dungeon.s"
+	@echo "... src/DynamicArrays.o"
+	@echo "... src/DynamicArrays.i"
+	@echo "... src/DynamicArrays.s"
+	@echo "... src/Enemy.o"
+	@echo "... src/Enemy.i"
+	@echo "... src/Enemy.s"
+	@echo "... src/LinkedList.o"
+	@echo "... src/LinkedList.i"
+	@echo "... src/LinkedList.s"
+	@echo "... src/Player.o"
+	@echo "... src/Player.i"
+	@echo "... src/Player.s"
+	@echo "... src/Queue.o"
+	@echo "... src/Queue.i"
+	@echo "... src/Queue.s"
+	@echo "... src/Room.o"
+	@echo "... src/Room.i"
+	@echo "... src/Room.s"
+	@echo "... src/Stack.o"
+	@echo "... src/Stack.i"
+	@echo "... src/Stack.s"
+	@echo "... src/Treasure.o"
+	@echo "... src/Treasure.i"
+	@echo "... src/Treasure.s"
 .PHONY : help
 
 

@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/omer_unix/homework_project_2/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/SFML_Valgrind.dir/all
+all: CMakeFiles/HomeworkProject2.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/SFML_Valgrind.dir/clean
+clean: CMakeFiles/HomeworkProject2.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/SFML_Valgrind.dir
+# Target rules for target CMakeFiles/HomeworkProject2.dir
 
 # All Build rule for target.
-CMakeFiles/SFML_Valgrind.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=1,2 "Built target SFML_Valgrind"
-.PHONY : CMakeFiles/SFML_Valgrind.dir/all
+CMakeFiles/HomeworkProject2.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/omer_unix/homework_project_2/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Built target HomeworkProject2"
+.PHONY : CMakeFiles/HomeworkProject2.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/SFML_Valgrind.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/omer_unix/homework_project_2/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/SFML_Valgrind.dir/all
+CMakeFiles/HomeworkProject2.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/omer_unix/homework_project_2/build/CMakeFiles 11
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/HomeworkProject2.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/omer_unix/homework_project_2/build/CMakeFiles 0
-.PHONY : CMakeFiles/SFML_Valgrind.dir/rule
+.PHONY : CMakeFiles/HomeworkProject2.dir/rule
 
 # Convenience name for target.
-SFML_Valgrind: CMakeFiles/SFML_Valgrind.dir/rule
-.PHONY : SFML_Valgrind
+HomeworkProject2: CMakeFiles/HomeworkProject2.dir/rule
+.PHONY : HomeworkProject2
 
 # clean rule for target.
-CMakeFiles/SFML_Valgrind.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SFML_Valgrind.dir/build.make CMakeFiles/SFML_Valgrind.dir/clean
-.PHONY : CMakeFiles/SFML_Valgrind.dir/clean
+CMakeFiles/HomeworkProject2.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HomeworkProject2.dir/build.make CMakeFiles/HomeworkProject2.dir/clean
+.PHONY : CMakeFiles/HomeworkProject2.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -1,16 +1,22 @@
+# Minimum CMake version required
 cmake_minimum_required(VERSION 3.10)
-project(SFML_Valgrind_Example)
 
+# Project name
+project(HomeworkProject2)
+
+# Set the C++ standard
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Include your folders
+# Set output directory for binaries
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Include directories
 include_directories(headers)
+
+# Gather all source files
 file(GLOB SRC_FILES "src/*.cpp")
 file(GLOB MAIN_FILES "main/*.cpp")
 
-# Find SFML
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
-
-# Build
-add_executable(SFML_Valgrind ${SRC_FILES} ${MAIN_FILES})
-target_link_libraries(SFML_Valgrind sfml-graphics sfml-window sfml-system)
+# Add the executable
+add_executable(HomeworkProject2 ${SRC_FILES} ${MAIN_FILES})
