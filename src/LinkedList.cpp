@@ -63,3 +63,21 @@ void LinkedList::DisplayRoomDetails(int nodeNumber) {
 //         items.erase(it); // Erase only that occurrence
 //     }
 // }
+
+std::string LinkedList::getDescriptionAt(int index) {
+    if (index < 0) return "Invalid room";
+    
+    Node* current = head;
+    int count = 0;
+    
+    while (current != nullptr && count < index) {
+        current = current->next;
+        count++;
+    }
+    
+    if (current != nullptr) {
+        return current->room.getDescription(); // Access through room object
+    }
+    
+    return "Invalid room";
+}

@@ -43,3 +43,7 @@ bool Dungeon::PlayerAtTheBeginning(){
 void Dungeon::EnemyStats(){
     Enemies.dequeue();
 }
+
+std::string Dungeon::getRoomDescriptionAt(int index) {
+    return rooms.getDescriptionAt(index - 1);
+}

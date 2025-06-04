@@ -20,6 +20,81 @@ enum GameState {
     GAME_OVER
 };
 
+enum PlayingState {
+    INTRO,
+    ROOM_NAVIGATION,
+    DECISION_MAKING,
+    COMBAT,
+    BOSS_FIGHT,
+    GAME_END
+};
+
+void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon, int roomIndex, int movesLeft, Player& p1, float windowWidth) {
+    // Room title/description
+    sf::Text roomDesc;
+    roomDesc.setFont(font);
+    roomDesc.setString(dungeon.getRoomDescriptionAt(roomIndex));
+    roomDesc.setCharacterSize(24);
+    roomDesc.setFillColor(sf::Color::White);
+    roomDesc.setPosition(50, 50);
+    window.draw(roomDesc);
+    
+    // Moves left indicator
+    sf::Text movesText;
+    movesText.setFont(font);
+    movesText.setString("Moves left: " + std::to_string(7 - movesLeft));
+    movesText.setCharacterSize(18);
+    movesText.setFillColor(sf::Color::Yellow);
+    movesText.setPosition(windowWidth - 150, 20);
+    window.draw(movesText);
+    
+    // Player health
+    sf::Text healthText;
+    healthText.setFont(font);
+    healthText.setString("Health: " + std::to_string(p1.getHealth()));
+    healthText.setCharacterSize(18);
+    healthText.setFillColor(sf::Color::Green);
+    healthText.setPosition(50, 20);
+    window.draw(healthText);
+}
+
+
+void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState) {
+    buttons.clear(); // Clear previous buttons
+    
+    switch(roomNumber) {
+        case 1: // First room - torch or gold
+            buttons.push_back(Button(
+                windowWidth / 2 - 220, windowHeight / 2 + 50,
+                200, 50, &font, "Take Gold",
+                sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                [&]() { 
+                    // Gold selection logic
+                    if(!level1Done) {
+                        p1.SetInventory("5 Gold coins");
+                        level1Done = true;
+                    }
+                    playingState = ROOM_NAVIGATION;
+                }
+            ));
+            
+            buttons.push_back(Button(
+                windowWidth / 2 + 20, windowHeight / 2 + 50,
+                200, 50, &font, "Take Torch",
+                sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                [&]() { 
+                    // Torch selection logic
+                    p1.SetInventory("torch");
+                    playingState = ROOM_NAVIGATION;
+                }
+            ));
+            break;
+            
+        // Additional cases for other rooms
+        // ...
+    }
+}
+
 int main() {
     // ------------------------------------------------------------------------- Initialization -------------------------------------------------------------------------
     // for window creation
@@ -53,6 +128,10 @@ int main() {
     p1.SetHealth(100);
     string name;
     string startPlay;
+    PlayingState playingState = INTRO;
+    int currentRoom = 1;
+    int numMoves = 1;
+    bool level1Done = false;
     // ------------------------- Text Input Setup -------------------------
     string currentInput = "";
     bool isAcceptingInput = true;
@@ -203,6 +282,161 @@ int main() {
         startButton.render(window);
         exitButton.render(window);
     } else if (currentState == PLAYING) {
+        // Intialize on first entry to PLAYING state
+        static bool gameInitialized = false;
+        static vector<Button> roomButtons;
+
+        if (!gameInitialized) {
+            // Get player name
+            isAcceptingInput = true;
+            promptText.setString("Enter your name:");
+            gameInitialized = true;
+            playingState = INTRO;
+        }
+
+         // Handle different playing substates
+        switch (playingState) {
+            case INTRO:
+                // Show introduction and get player name
+                if (isAcceptingInput) {
+                    // Display intro text and name input
+                    sf::Text introText;
+                    introText.setFont(font);
+                    introText.setString("Welcome to Escape the Dungeon!\nYou fell down a trap door and landed in a dungeon.");
+                    introText.setCharacterSize(24);
+                    introText.setFillColor(sf::Color::White);
+                    introText.setPosition(50, 50);
+                    window.draw(introText);
+                    
+                    window.draw(inputBox);
+                    window.draw(promptText);
+                    inputText.setString(currentInput + "_");
+                    window.draw(inputText);
+                } else {
+                    // If name submitted, show start message
+                    name = startPlay;
+                    p1.SetName(name);
+                    
+                    sf::Text welcomeText;
+                    welcomeText.setFont(font);
+                    welcomeText.setString("Welcome, " + name + "!\nPress SPACE to begin your adventure.");
+                    welcomeText.setCharacterSize(24);
+                    welcomeText.setFillColor(sf::Color::White);
+                    welcomeText.setPosition(50, 50);
+                    window.draw(welcomeText);
+                    
+                    // Check for space key to start game
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                        playingState = ROOM_NAVIGATION;
+                        currentRoom = 1;
+                        dungeon.PlayerPathAdd(currentRoom);
+                    }
+                }
+                break;
+                
+            case ROOM_NAVIGATION:
+                // Display current room info
+                displayRoomInfo(window, font, dungeon, currentRoom, numMoves, p1, windowWidth);
+                
+                // Create room-specific buttons if they don't exist
+                if (roomButtons.empty()) {
+                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState);
+                }
+                
+                // Draw room buttons
+                for (auto& button : roomButtons) {
+                    button.update(mousePosView);
+                    button.render(window);
+                }
+                
+                // Also draw navigation buttons (next room, back room)
+                // ... Code for navigation buttons ...
+                
+                break;
+                
+            case DECISION_MAKING:
+                // Room-specific decision logic
+                break;
+                
+            case COMBAT:
+                // Enemy combat logic
+                break;
+                
+            case BOSS_FIGHT:
+                // Final boss fight logic with reaction timer
+                static sf::Clock reactionClock;
+                static bool bossTimerStarted = false;
+                
+                if (!bossTimerStarted) {
+                    sf::Text prepText;
+                    prepText.setFont(font);
+                    prepText.setString("The Final Boss appears!\nPrepare yourself...");
+                    prepText.setCharacterSize(28);
+                    prepText.setFillColor(sf::Color::Red);
+                    prepText.setPosition(windowWidth/2 - 150, windowHeight/2 - 50);
+                    window.draw(prepText);
+                    
+                    if (reactionClock.getElapsedTime().asSeconds() > 3.0f) {
+                        bossTimerStarted = true;
+                        reactionClock.restart();
+                    }
+                } else {
+                    sf::Text attackText;
+                    attackText.setFont(font);
+                    attackText.setString("NOW! Press F to slash your sword!");
+                    attackText.setCharacterSize(36);
+                    attackText.setFillColor(sf::Color::Red);
+                    attackText.setPosition(windowWidth/2 - 200, windowHeight/2);
+                    window.draw(attackText);
+                    
+                    // Check for F key
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+                        float reactionTime = reactionClock.getElapsedTime().asSeconds();
+                        if (reactionTime < 3.0f) {
+                            // Success
+                            playingState = GAME_END;
+                            // Victory message
+                        } else {
+                            // Too slow
+                            p1.SetHealth(0);
+                            currentState = GAME_OVER;
+                        }
+                    }
+                    
+                    // Timeout after 5 seconds
+                    if (reactionClock.getElapsedTime().asSeconds() > 5.0f) {
+                        p1.SetHealth(0);
+                        currentState = GAME_OVER;
+                    }
+                }
+                break;
+                
+            case GAME_END:
+                // Display game end result
+                sf::Text endText;
+                endText.setFont(font);
+                if (p1.getHealth() <= 0) {
+                    endText.setString("Game Over!\nYou were defeated.");
+                    endText.setFillColor(sf::Color::Red);
+                } else if (numMoves >= 7) {
+                    endText.setString("Game Over!\nYou ran out of moves.");
+                    endText.setFillColor(sf::Color::Yellow);
+                } else {
+                    endText.setString("Congratulations!\nYou escaped the dungeon!");
+                    endText.setFillColor(sf::Color::Green);
+                }
+                endText.setCharacterSize(36);
+                endText.setPosition(windowWidth/2 - 200, windowHeight/2 - 50);
+                window.draw(endText);
+                
+                // Return to menu button
+                // ...
+                
+                break;
+        }
+
+
+        
         sf::Text playingText;
         playingText.setFont(font);
         playingText.setCharacterSize(36);
@@ -219,6 +453,31 @@ int main() {
             inputText.setString(currentInput + "_"); // Add cursor
             window.draw(inputText);
         }
+    }
+
+    else if (currentState == GAME_OVER) {
+        sf::Text gameOverText;
+        gameOverText.setFont(font);
+        gameOverText.setString("GAME OVER");
+        gameOverText.setCharacterSize(64);
+        gameOverText.setFillColor(sf::Color::Red);
+        gameOverText.setPosition(windowWidth/2 - 200, windowHeight/2 - 100);
+        window.draw(gameOverText);
+        
+        sf::Text resultText;
+        resultText.setFont(font);
+        if (p1.getHealth() <= 0) {
+            resultText.setString("You were defeated!");
+        } else {
+            resultText.setString("You ran out of moves!");
+        }
+        resultText.setCharacterSize(36);
+        resultText.setFillColor(sf::Color::White);
+        resultText.setPosition(windowWidth/2 - 150, windowHeight/2);
+        window.draw(resultText);
+        
+        // Back to menu button
+        // ...
     }
 
     window.display();

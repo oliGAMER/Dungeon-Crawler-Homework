@@ -28,4 +28,5 @@ public:
     bool PlayerAtTheBeginning();
     //void RemoveItem(string item, vector<string> items);
     void EnemyStats();
+    string getRoomDescriptionAt(int index);
     };  

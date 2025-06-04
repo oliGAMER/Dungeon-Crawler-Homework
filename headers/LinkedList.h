@@ -24,4 +24,5 @@ public:
     void AddNodeInTheEnd(string description, vector<string> items, Treasure treasure);
     void DisplayRoomDetails(int nodeNumber);
     //void itemTaken(string item, vector<string> items);
+    string getDescriptionAt(int index);
 };
