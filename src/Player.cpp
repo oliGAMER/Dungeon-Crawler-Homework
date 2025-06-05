@@ -19,7 +19,7 @@ void Player::SetInventory(string element) {
 vector<string> Player::GetInventoryVector(){
     vector<string> result;
     for(int i = 0; i < inventory.GetSize(); i++) {
-        result.push_back(inventory.GetItem(i));
+        result.push_back(inventory[i]);
     }
     return result;
 }

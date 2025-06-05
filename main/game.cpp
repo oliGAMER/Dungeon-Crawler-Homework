@@ -36,7 +36,9 @@ void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon,
     roomDesc.setString(dungeon.getRoomDescriptionAt(roomIndex));
     roomDesc.setCharacterSize(24);
     roomDesc.setFillColor(sf::Color::White);
-    roomDesc.setPosition(50, 50);
+    sf::FloatRect textRect = roomDesc.getLocalBounds();
+    roomDesc.setOrigin(textRect.width / 2, 0);
+    roomDesc.setPosition(windowWidth / 2, 100);
     window.draw(roomDesc);
     
     // Moves left indicator
@@ -59,7 +61,7 @@ void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon,
 }
 
 
-void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom) {
+void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom, string& statusMessage, float& statusMessageTimer, bool& torchTaken, int& previousRoom) {
     buttons.clear(); // Clear previous buttons
     
     switch(roomNumber) {
@@ -68,26 +70,44 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 windowWidth / 2 - 220, windowHeight / 2 + 50,
                 200, 50, &font, "Take Gold",
                 sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                [&p1, &level1Done, &playingState, &t1]() { 
+                [&p1, &level1Done, &playingState, &t1, &statusMessage, &statusMessageTimer]() { 
                     // Gold selection logic
                     if(!level1Done) {
                         p1.SetInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
                         level1Done = true; // mark gold coins as taken
+                        statusMessage = "You collected 5 gold coins!";
+                        statusMessageTimer = 3.0f;
                     }
                     playingState = ROOM_NAVIGATION;
                 }
             ));
             
-            buttons.push_back(Button(
-                windowWidth / 2 + 20, windowHeight / 2 + 50,
-                200, 50, &font, "Take Torch",
-                sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                [&]() { 
-                    // Torch selection logic
-                    p1.SetInventory("torch");
-                    playingState = ROOM_NAVIGATION;
-                }
-            ));
+            if (!torchTaken || (torchTaken && previousRoom == 2)) {
+                buttons.push_back(Button(
+                    windowWidth / 2 + 20, windowHeight / 2 + 50,
+                    200, 50, &font, "Take Torch",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&p1, &torchTaken, &playingState, &statusMessage, &statusMessageTimer]() { 
+                        if (!p1.CheckInventory("torch")) {
+                            p1.SetInventory("torch");
+                            torchTaken = true;
+                            statusMessage = "You picked up the torch!";
+                        } else {
+                            statusMessage = "Cannot carry more than one torch.";
+                        }
+                        statusMessageTimer = 3.0f;
+                        playingState = ROOM_NAVIGATION;
+                    }
+                ));
+            } else {
+                // Add disabled button
+                buttons.push_back(Button(
+                    windowWidth / 2 + 20, windowHeight / 2 + 50,
+                    200, 50, &font, "Take Torch",
+                    sf::Color(50, 50, 50), sf::Color(50, 50, 50), sf::Color(50, 50, 50),
+                    []() {  }
+                ));
+            }
             break;
             
         case 2:
@@ -95,8 +115,14 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 windowWidth / 2 - 220, windowHeight / 2 + 50,
                 200, 50, &font, "Swim Across",
                 sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                [&p1, &numMoves, &playingState, &currentRoom]() { 
-                    p1.RemoveInventory("torch");
+                [&p1, &numMoves, &playingState, &currentRoom, &statusMessage, &statusMessageTimer]() { 
+                    if (p1.CheckInventory("torch")) {
+                        p1.RemoveInventory("torch");
+                        statusMessage = "You swam across the pond but your torch is extinguished!";
+                    } else {
+                        statusMessage = "You swam across the pond.";
+                    }
+                    statusMessageTimer = 3.0f;
                     
                     numMoves++;
                     currentRoom++;
@@ -108,8 +134,11 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 windowWidth / 2 + 20, windowHeight / 2 + 50,
                 200, 50, &font, "Jump Over",
                 sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                [&p1, &numMoves, &playingState, &currentRoom]() { 
+                [&p1, &numMoves, &playingState, &currentRoom, &statusMessage, &statusMessageTimer]() { 
                     p1.SetHealth(p1.getHealth() - 10);
+                    statusMessage = "Ouch!!! That jump almost cost you a knee.";
+                    statusMessageTimer = 3.0f;
+                    
                     numMoves++;
                     currentRoom++;
                     playingState = ROOM_NAVIGATION;
@@ -162,7 +191,7 @@ int main() {
     PlayingState playingState = INTRO;
     int currentRoom = 1;
     int numMoves = 1;
-    static int previousRoom = 0;
+    int previousRoom = 0;
     bool level1Done = false;
     // ------------------------- Text Input Setup -------------------------
     string currentInput = "";
@@ -170,6 +199,7 @@ int main() {
     sf::Text inputText;
     sf::RectangleShape inputBox;
     sf::Text promptText;
+    bool torchTaken = false;
 
     // Set up input text display
     inputText.setFont(font);
@@ -195,6 +225,9 @@ int main() {
     Button* nextRoomButton = nullptr;
     Button* checkStatsButton = nullptr;
     Button* backRoomButton = nullptr;
+    string statusMessage = "";
+    float statusMessageTimer = 0.0f;
+    sf::Clock statusClock;
 
 
     // the first room
@@ -202,7 +235,7 @@ int main() {
     Treasure t1;
     t1.SetType("Gold");
     t1.SetQuantity(5);
-    dungeon.newRoom("You are in a dark room", {"torch"}, t1);
+    dungeon.newRoom("You are in a very-well lit room with a lot of treasure.", {"torch"}, t1);
 
     // the second room
     Treasure t2;
@@ -304,6 +337,24 @@ int main() {
             }
         }
 
+        if (currentState == PLAYING && playingState == DECISION_MAKING) {
+            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                
+                // Create the button here just for event handling
+                Button tempBackButton(
+                    windowWidth / 2 - 100, 
+                    windowHeight - 100,
+                    200, 50, &font, "Back to Game",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&playingState]() {
+                        playingState = ROOM_NAVIGATION;
+                    }
+                );
+                tempBackButton.handleEvent(event, clickPosView);
+            }
+        }
+
         if (currentState == PLAYING && playingState == ROOM_NAVIGATION) {
             if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
@@ -388,13 +439,21 @@ int main() {
                 break;
                 
             case ROOM_NAVIGATION:{
+            // Add near the beginning of the ROOM_NAVIGATION case
+                if (numMoves >= 7) {
+                    currentState = GAME_OVER;
+                    statusMessage = "You ran out of moves!";
+                    statusMessageTimer = 5.0f;
+                    break;
+                }
+                
                 // Display current room info
                 displayRoomInfo(window, font, dungeon, currentRoom, numMoves, p1, windowWidth);
                 
                 // Create room-specific buttons if they don't exist
-                if (roomButtons.empty()) {
+                if (roomButtons.empty() || previousRoom != currentRoom) {
                     roomButtons.clear();
-                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom);
+                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom, statusMessage, statusMessageTimer, torchTaken, previousRoom);
                     previousRoom = currentRoom;
                 }
                 
@@ -403,7 +462,7 @@ int main() {
                     button.update(mousePosView);
                     button.render(window);
                 }
-                
+            if (currentRoom <= 2) {   
                 if (nextRoomButton == nullptr) {
                     nextRoomButton = new Button(
                         windowWidth / 2 - 300, 
@@ -450,12 +509,25 @@ int main() {
 
                 // Update and render navigation buttons
                 nextRoomButton->update(mousePosView);
-                checkStatsButton->update(mousePosView);
-                backRoomButton->update(mousePosView);
+                if (currentRoom > 1) backRoomButton->update(mousePosView);
                 nextRoomButton->render(window);
-                checkStatsButton->render(window);
-                backRoomButton->render(window);
-                
+                if (currentRoom > 1) backRoomButton->render(window);
+            }
+
+            if (checkStatsButton == nullptr) {
+                checkStatsButton = new Button(
+                    windowWidth / 2 - 100, 
+                    windowHeight - 80,
+                    200, 50, &font, "Check Stats",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&playingState]() {
+                        playingState = DECISION_MAKING;
+                    }
+                );
+            }
+
+            checkStatsButton->update(mousePosView);
+            checkStatsButton->render(window);
                 break;}
                 
             case DECISION_MAKING:{
@@ -520,10 +592,10 @@ int main() {
                 backButton.render(window);
                 
                 // Handle back button events
-                if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-                    backButton.handleEvent(event, clickPosView);
-                }
+                // if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                //     sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                //     backButton.handleEvent(event, clickPosView);
+                // }
                     break;}
                 
             case COMBAT:{
@@ -624,6 +696,16 @@ int main() {
     }
 
     else if (currentState == GAME_OVER) {
+        // Use a static timer for the GAME_OVER state
+        static sf::Clock gameOverClock;
+        static bool gameOverClockStarted = false;
+        
+        if (!gameOverClockStarted) {
+            gameOverClock.restart();
+            gameOverClockStarted = true;
+        }
+        
+        // Draw Game Over text
         sf::Text gameOverText;
         gameOverText.setFont(font);
         gameOverText.setString("GAME OVER");
@@ -632,6 +714,7 @@ int main() {
         gameOverText.setPosition(windowWidth/2 - 200, windowHeight/2 - 100);
         window.draw(gameOverText);
         
+        // Draw result message
         sf::Text resultText;
         resultText.setFont(font);
         if (p1.getHealth() <= 0) {
@@ -644,10 +727,27 @@ int main() {
         resultText.setPosition(windowWidth/2 - 150, windowHeight/2);
         window.draw(resultText);
         
-        // Back to menu button
-        // ...
+        // Close window after 5 seconds
+        if (gameOverClock.getElapsedTime().asSeconds() > 5.0f) {
+            window.close();
+        }
     }
 
+    if (!statusMessage.empty() && statusMessageTimer > 0.0f) {
+        sf::Text feedbackText;
+        feedbackText.setFont(font);
+        feedbackText.setString(statusMessage);
+        feedbackText.setCharacterSize(24);
+        feedbackText.setFillColor(sf::Color::Yellow);
+        feedbackText.setPosition(windowWidth/2 - 150, windowHeight - 150);
+        window.draw(feedbackText);
+    
+        // Update timer
+        statusMessageTimer -= statusClock.restart().asSeconds();
+        if (statusMessageTimer <= 0.0f) {
+            statusMessage = "";
+        }
+    }
     window.display();
 } // End of main game loop
     //--------------------------------------------------------------------------------------------------------------------------------------------------

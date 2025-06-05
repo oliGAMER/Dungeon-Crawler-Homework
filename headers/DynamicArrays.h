@@ -17,7 +17,12 @@ public:
     void Print();
     bool Find(string element);
     int GetSize(){return size;}
-    string GetItem(int i){return arr[i];}
+    string& operator[](int index) {
+        if (index < 0 || index >= size) {
+            throw out_of_range("Index out of range");
+        }
+        return arr[index];
+    }
 private:    
     string* arr;
     int capacity;
