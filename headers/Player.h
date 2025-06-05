@@ -19,7 +19,7 @@ public:
     void SetInventory(string element);
     void SetName(string name);
     int getHealth();
-    //string getInventory();
+    vector<string> GetInventoryVector();
     string getName();
     void RemoveInventory(string element);
     bool CheckInventory(string element);

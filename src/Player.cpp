@@ -16,6 +16,14 @@ void Player::SetInventory(string element) {
     this->inventory.AddItem(element);
 }
 
+vector<string> Player::GetInventoryVector(){
+    vector<string> result;
+    for(int i = 0; i < inventory.GetSize(); i++) {
+        result.push_back(inventory.GetItem(i));
+    }
+    return result;
+}
+
 void Player::SetName(string name) {
     this->name = name;
 }

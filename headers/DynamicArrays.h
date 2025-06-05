@@ -16,6 +16,8 @@ public:
     void DeSize();
     void Print();
     bool Find(string element);
+    int GetSize(){return size;}
+    string GetItem(int i){return arr[i];}
 private:    
     string* arr;
     int capacity;

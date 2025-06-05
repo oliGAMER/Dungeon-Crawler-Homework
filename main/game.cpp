@@ -59,7 +59,7 @@ void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon,
 }
 
 
-void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState) {
+void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom) {
     buttons.clear(); // Clear previous buttons
     
     switch(roomNumber) {
@@ -68,11 +68,11 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 windowWidth / 2 - 220, windowHeight / 2 + 50,
                 200, 50, &font, "Take Gold",
                 sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                [&]() { 
+                [&p1, &level1Done, &playingState, &t1]() { 
                     // Gold selection logic
                     if(!level1Done) {
-                        p1.SetInventory("5 Gold coins");
-                        level1Done = true;
+                        p1.SetInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
+                        level1Done = true; // mark gold coins as taken
                     }
                     playingState = ROOM_NAVIGATION;
                 }
@@ -90,8 +90,39 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
             ));
             break;
             
-        // Additional cases for other rooms
-        // ...
+        case 2:
+            buttons.push_back(Button(
+                windowWidth / 2 - 220, windowHeight / 2 + 50,
+                200, 50, &font, "Swim Across",
+                sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                [&p1, &numMoves, &playingState, &currentRoom]() { 
+                    p1.RemoveInventory("torch");
+                    
+                    numMoves++;
+                    currentRoom++;
+                    playingState = ROOM_NAVIGATION;
+                }
+            ));
+            
+            buttons.push_back(Button(
+                windowWidth / 2 + 20, windowHeight / 2 + 50,
+                200, 50, &font, "Jump Over",
+                sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                [&p1, &numMoves, &playingState, &currentRoom]() { 
+                    p1.SetHealth(p1.getHealth() - 10);
+                    numMoves++;
+                    currentRoom++;
+                    playingState = ROOM_NAVIGATION;
+                }
+            ));
+            
+            buttons.push_back(Button(
+                windowWidth / 2 - 200, windowHeight / 2 - 50,
+                400, 40, &font, "You have to swim across or jump over the pond",
+                sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                []() { }
+            ));
+        break;   
     }
 }
 
@@ -131,6 +162,7 @@ int main() {
     PlayingState playingState = INTRO;
     int currentRoom = 1;
     int numMoves = 1;
+    static int previousRoom = 0;
     bool level1Done = false;
     // ------------------------- Text Input Setup -------------------------
     string currentInput = "";
@@ -158,6 +190,11 @@ int main() {
     promptText.setCharacterSize(24);
     promptText.setFillColor(sf::Color::White);
     promptText.setPosition(windowWidth / 2 - 200, windowHeight / 2 + 10);
+
+    vector<Button> roomButtons;
+    Button* nextRoomButton = nullptr;
+    Button* checkStatsButton = nullptr;
+    Button* backRoomButton = nullptr;
 
 
     // the first room
@@ -266,6 +303,22 @@ int main() {
                 }
             }
         }
+
+        if (currentState == PLAYING && playingState == ROOM_NAVIGATION) {
+            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                
+                // Handle room buttons
+                for (auto& button : roomButtons) {
+                    button.handleEvent(event, clickPosView);
+                }
+                
+                // Handle navigation buttons if they exist
+                if (nextRoomButton) nextRoomButton->handleEvent(event, clickPosView);
+                if (checkStatsButton) checkStatsButton->handleEvent(event, clickPosView);
+                if (backRoomButton) backRoomButton->handleEvent(event, clickPosView);
+            }
+        }
     } // End of pollEvent loop
 
     // Update UI elements
@@ -284,7 +337,7 @@ int main() {
     } else if (currentState == PLAYING) {
         // Intialize on first entry to PLAYING state
         static bool gameInitialized = false;
-        static vector<Button> roomButtons;
+
 
         if (!gameInitialized) {
             // Get player name
@@ -334,13 +387,15 @@ int main() {
                 }
                 break;
                 
-            case ROOM_NAVIGATION:
+            case ROOM_NAVIGATION:{
                 // Display current room info
                 displayRoomInfo(window, font, dungeon, currentRoom, numMoves, p1, windowWidth);
                 
                 // Create room-specific buttons if they don't exist
                 if (roomButtons.empty()) {
-                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState);
+                    roomButtons.clear();
+                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom);
+                    previousRoom = currentRoom;
                 }
                 
                 // Draw room buttons
@@ -349,20 +404,133 @@ int main() {
                     button.render(window);
                 }
                 
-                // Also draw navigation buttons (next room, back room)
-                // ... Code for navigation buttons ...
+                if (nextRoomButton == nullptr) {
+                    nextRoomButton = new Button(
+                        windowWidth / 2 - 300, 
+                        windowHeight - 80,
+                        200, 50, &font, "Next Room",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&numMoves, &currentRoom, &dungeon, &playingState]() {
+                            numMoves++;
+                            currentRoom++;
+                            dungeon.PlayerPathAdd(currentRoom);
+                            playingState = ROOM_NAVIGATION;
+                        }
+                    );
+                }
+
+                if (checkStatsButton == nullptr) {
+                    checkStatsButton = new Button(
+                        windowWidth / 2 - 100, 
+                        windowHeight - 80,
+                        200, 50, &font, "Check Stats",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&playingState]() {
+                            playingState = DECISION_MAKING;
+                        }
+                    );
+                }
+
+                if (backRoomButton == nullptr) {
+                    backRoomButton = new Button(
+                        windowWidth / 2 + 100, 
+                        windowHeight - 80,
+                        200, 50, &font, "Back Room",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&numMoves, &currentRoom, &dungeon, &playingState]() {
+                            if (currentRoom > 1) {
+                                numMoves++;
+                                dungeon.PlayerPathBack();
+                                currentRoom--;
+                                playingState = ROOM_NAVIGATION;
+                            }
+                        }
+                    );
+                }
+
+                // Update and render navigation buttons
+                nextRoomButton->update(mousePosView);
+                checkStatsButton->update(mousePosView);
+                backRoomButton->update(mousePosView);
+                nextRoomButton->render(window);
+                checkStatsButton->render(window);
+                backRoomButton->render(window);
                 
-                break;
+                break;}
                 
-            case DECISION_MAKING:
-                // Room-specific decision logic
-                break;
+            case DECISION_MAKING:{
+            // Display player stats
+                sf::Text statsTitle;
+                statsTitle.setFont(font);
+                statsTitle.setString("Player Stats");
+                statsTitle.setCharacterSize(32);
+                statsTitle.setFillColor(sf::Color::White);
+                statsTitle.setPosition(windowWidth / 2 - 100, 50);
+                window.draw(statsTitle);
                 
-            case COMBAT:
+                sf::Text playerName;
+                playerName.setFont(font);
+                playerName.setString("Name: " + p1.getName());
+                playerName.setCharacterSize(24);
+                playerName.setFillColor(sf::Color::White);
+                playerName.setPosition(windowWidth / 2 - 150, 120);
+                window.draw(playerName);
+                
+                sf::Text playerHealth;
+                playerHealth.setFont(font);
+                playerHealth.setString("Health: " + to_string(p1.getHealth()));
+                playerHealth.setCharacterSize(24);
+                playerHealth.setFillColor(sf::Color::Green);
+                playerHealth.setPosition(windowWidth / 2 - 150, 160);
+                window.draw(playerHealth);
+                
+                // Display inventory
+                sf::Text inventoryTitle;
+                inventoryTitle.setFont(font);
+                inventoryTitle.setString("Inventory:");
+                inventoryTitle.setCharacterSize(24);
+                inventoryTitle.setFillColor(sf::Color::White);
+                inventoryTitle.setPosition(windowWidth / 2 - 150, 200);
+                window.draw(inventoryTitle);
+                
+                // Get player's inventory
+                vector<string> inventory = p1.GetInventoryVector();
+                for (int i = 0; i < inventory.size(); i++) {
+                    sf::Text item;
+                    item.setFont(font);
+                    item.setString("- " + inventory[i]);
+                    item.setCharacterSize(20);
+                    item.setFillColor(sf::Color::White);
+                    item.setPosition(windowWidth / 2 - 130, 240 + (i * 30));
+                    window.draw(item);
+                }
+                
+                // Back button
+                Button backButton(
+                    windowWidth / 2 - 100, 
+                    windowHeight - 100,
+                    200, 50, &font, "Back to Game",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&playingState]() {
+                        playingState = ROOM_NAVIGATION;
+                    }
+                );
+                
+                backButton.update(mousePosView);
+                backButton.render(window);
+                
+                // Handle back button events
+                if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    backButton.handleEvent(event, clickPosView);
+                }
+                    break;}
+                
+            case COMBAT:{
                 // Enemy combat logic
                 break;
-                
-            case BOSS_FIGHT:
+            }
+            case BOSS_FIGHT:{
                 // Final boss fight logic with reaction timer
                 static sf::Clock reactionClock;
                 static bool bossTimerStarted = false;
@@ -410,8 +578,8 @@ int main() {
                     }
                 }
                 break;
-                
-            case GAME_END:
+            }
+            case GAME_END:{
                 // Display game end result
                 sf::Text endText;
                 endText.setFont(font);
@@ -432,7 +600,7 @@ int main() {
                 // Return to menu button
                 // ...
                 
-                break;
+                break;}
         }
 
 
@@ -483,6 +651,8 @@ int main() {
     window.display();
 } // End of main game loop
     //--------------------------------------------------------------------------------------------------------------------------------------------------
-
+    delete nextRoomButton;
+    delete checkStatsButton;
+    delete backRoomButton;
     return 0;
 } // End of main function
