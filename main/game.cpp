@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <thread>
 #include <chrono>
+#include <queue>
 #include "../headers/DynamicArrays.h"
 #include "../headers/Player.h"
 #include "../headers/Dungeon.h"
@@ -27,6 +28,18 @@ enum PlayingState {
     COMBAT,
     BOSS_FIGHT,
     GAME_END
+};
+
+struct CombatEvent {
+    string source;
+    string target;  
+    string action;    
+    int value;        
+    int priority;    
+    
+    bool operator<(const CombatEvent& other) const {
+        return priority < other.priority; 
+    }
 };
 
 void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon, int roomIndex, int movesLeft, Player& p1, float windowWidth) {
@@ -269,6 +282,110 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     ));
                 }
             }
+            break;
+
+            case 4: // Combat room with enemies
+                buttons.push_back(Button(
+                    windowWidth / 2 - 200, windowHeight / 2 - 80,
+                    400, 40, &font, "TWO ALIENS APPEAR OUT OF NOWHERE",
+                    sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                    []() { }
+                ));
+                
+                buttons.push_back(Button(
+                    windowWidth / 2 - 100, windowHeight / 2,
+                    200, 50, &font, "Fight!",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon, &t1, &playingState]() {
+                        // Create combat event queue
+                        priority_queue<CombatEvent> combatQueue;
+                        
+                        // Initialize combat events based on player equipment
+                        if (p1.CheckInventory("sword")) {
+                            // Goblin attacks first (priority 10)
+                            combatQueue.push({"Goblin", "Player", "attack", 10, 10});
+                            // Player attacks with sword (priority 5)
+                            combatQueue.push({"Player", "All Enemies", "sword_attack", 100, 5});
+                        } else {
+                            // Creeper attacks first (priority 15)  
+                            combatQueue.push({"Creeper", "Player", "explosion", 20, 15});
+                            // Player attacks with bare hands (priority 3)
+                            combatQueue.push({"Player", "All Enemies", "hand_attack", 50, 3});
+                        }
+                        
+                        // Process all combat events
+                        string combatResults = "";
+                        while (!combatQueue.empty()) {
+                            CombatEvent event = combatQueue.top();
+                            combatQueue.pop();
+                            
+                            if (event.source == "Goblin" && event.action == "attack") {
+                                p1.SetHealth(p1.getHealth() - event.value);
+                                combatResults += "The goblin bites you on the leg!\n";
+                            }
+                            else if (event.source == "Creeper" && event.action == "explosion") {
+                                p1.SetHealth(p1.getHealth() - event.value);
+                                combatResults += "The creeper explodes on you!\n";
+                            }
+                            else if (event.source == "Player" && event.action == "sword_attack") {
+                                combatResults += "One slash of the sword annihilates the creeper and the goblin!\n";
+                            }
+                            else if (event.source == "Player" && event.action == "hand_attack") {
+                                combatResults += "You crush the goblin and the creeper with your bare hands!\n";
+                            }
+                        }
+                        
+                        // After combat, check if player has gold for healing potion
+                        if (p1.CheckInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins")) {
+                            // Queue healing option
+                            combatQueue.push({"Merchant", "Player", "offer_potion", 20, 1});
+                            combatResults += "\nA merchant appears and offers a healing potion!";
+                        }
+                        
+                        statusMessage = combatResults;
+                        statusMessageTimer = 5.0f;
+                        
+                        numMoves++;
+                        currentRoom++;
+                        playingState = ROOM_NAVIGATION;
+                    }
+                ));
+            break;
+            
+            case 5: // Final room
+                buttons.push_back(Button(
+                    windowWidth / 2 - 200, windowHeight / 2 - 80,
+                    400, 40, &font, "The Final Boss awaits...",
+                    sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                    []() { }
+                ));
+                
+                // Add boss fight button
+                buttons.push_back(Button(
+                    windowWidth / 2 - 100, windowHeight / 2,
+                    200, 50, &font, "Confront Boss",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&playingState, &p1, &statusMessage, &statusMessageTimer]() {
+                        playingState = BOSS_FIGHT;
+                        statusMessage = "You approach the final boss...";
+                        statusMessageTimer = 2.0f;
+                    }
+                ));
+                
+                // Add healing potion button if player has gold
+                if (p1.CheckInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins")) {
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 150, windowHeight / 2 + 100,
+                        300, 50, &font, "Buy Healing Potion (5 Gold)",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&p1, &statusMessage, &statusMessageTimer, &t1]() {
+                            p1.RemoveInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
+                            p1.SetHealth(p1.getHealth() + 20);
+                            statusMessage = "You used your gold to buy a healing potion! +20 Health";
+                            statusMessageTimer = 3.0f;
+                        }
+                    ));
+                }
             break;
     }
 
@@ -723,47 +840,91 @@ int main() {
             }
             case BOSS_FIGHT:{
                 // Final boss fight logic with reaction timer
-                static sf::Clock reactionClock;
-                static bool bossTimerStarted = false;
+                static sf::Clock bossReactionClock;
+                static bool bossPreparationStarted = false;
+                static bool bossPromptShown = false;
+                static bool bossResultDetermined = false;
                 
-                if (!bossTimerStarted) {
+                if (!bossPreparationStarted) {
+                    // Initial setup
+                    bossPreparationStarted = true;
+                    bossPromptShown = false;
+                    bossResultDetermined = false;
+                    bossReactionClock.restart();
+                    
+                    // Check if player has sword
+                    if (!p1.CheckInventory("sword")) {
+                        statusMessage = "You have no weapon! The boss crushes you.";
+                        statusMessageTimer = 3.0f;
+                        p1.SetHealth(0);
+                        currentState = GAME_OVER;
+                        break;
+                    }
+                }
+                
+                // Draw boss
+                sf::RectangleShape bossShape(sf::Vector2f(150, 200));
+                bossShape.setFillColor(sf::Color(150, 0, 0));
+                bossShape.setPosition(windowWidth/2 - 75, 150);
+                window.draw(bossShape);
+                
+                if (!bossPromptShown) {
+                    // Preparation phase
                     sf::Text prepText;
                     prepText.setFont(font);
                     prepText.setString("The Final Boss appears!\nPrepare yourself...");
-                    prepText.setCharacterSize(28);
+                    prepText.setCharacterSize(32);
                     prepText.setFillColor(sf::Color::Red);
-                    prepText.setPosition(windowWidth/2 - 150, windowHeight/2 - 50);
+                    prepText.setPosition(windowWidth/2 - 200, windowHeight/2 + 50);
                     window.draw(prepText);
                     
-                    if (reactionClock.getElapsedTime().asSeconds() > 3.0f) {
-                        bossTimerStarted = true;
-                        reactionClock.restart();
+                    sf::Text infoText;
+                    infoText.setFont(font);
+                    infoText.setString("You have to slash your sword when prompted!");
+                    infoText.setCharacterSize(24);
+                    infoText.setFillColor(sf::Color::White);
+                    infoText.setPosition(windowWidth/2 - 240, windowHeight/2 + 120);
+                    window.draw(infoText);
+                    
+                    // After 3 seconds of preparation, show the prompt
+                    if (bossReactionClock.getElapsedTime().asSeconds() > 3.0f) {
+                        bossPromptShown = true;
+                        bossReactionClock.restart(); // Reset for reaction timing
                     }
-                } else {
+                } else if (!bossResultDetermined) {
+                    // NOW! Prompt - player needs to react
                     sf::Text attackText;
                     attackText.setFont(font);
                     attackText.setString("NOW! Press F to slash your sword!");
                     attackText.setCharacterSize(36);
                     attackText.setFillColor(sf::Color::Red);
-                    attackText.setPosition(windowWidth/2 - 200, windowHeight/2);
+                    attackText.setPosition(windowWidth/2 - 250, windowHeight/2 + 50);
                     window.draw(attackText);
                     
-                    // Check for F key
+                    // Check for F key press
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
-                        float reactionTime = reactionClock.getElapsedTime().asSeconds();
+                        float reactionTime = bossReactionClock.getElapsedTime().asSeconds();
+                        bossResultDetermined = true;
+                        
                         if (reactionTime < 3.0f) {
-                            // Success
+                            // Success - player reacted in time
+                            statusMessage = "You slash the boss just in time and win the fight!";
+                            statusMessageTimer = 3.0f;
                             playingState = GAME_END;
-                            // Victory message
                         } else {
                             // Too slow
+                            statusMessage = "You hesitated... The boss crushes you!";
+                            statusMessageTimer = 3.0f;
                             p1.SetHealth(0);
                             currentState = GAME_OVER;
                         }
                     }
                     
-                    // Timeout after 5 seconds
-                    if (reactionClock.getElapsedTime().asSeconds() > 5.0f) {
+                    // If player doesn't react within 5 seconds, they lose
+                    if (bossReactionClock.getElapsedTime().asSeconds() > 5.0f) {
+                        bossResultDetermined = true;
+                        statusMessage = "You failed to react in time! The boss crushes you!";
+                        statusMessageTimer = 3.0f;
                         p1.SetHealth(0);
                         currentState = GAME_OVER;
                     }
@@ -771,27 +932,41 @@ int main() {
                 break;
             }
             case GAME_END:{
-                // Display game end result
+            // Display victory message
                 sf::Text endText;
                 endText.setFont(font);
-                if (p1.getHealth() <= 0) {
-                    endText.setString("Game Over!\nYou were defeated.");
-                    endText.setFillColor(sf::Color::Red);
-                } else if (numMoves >= 7) {
-                    endText.setString("Game Over!\nYou ran out of moves.");
-                    endText.setFillColor(sf::Color::Yellow);
-                } else {
-                    endText.setString("Congratulations!\nYou escaped the dungeon!");
-                    endText.setFillColor(sf::Color::Green);
-                }
-                endText.setCharacterSize(36);
-                endText.setPosition(windowWidth/2 - 200, windowHeight/2 - 50);
+                endText.setString("VICTORY!");
+                endText.setCharacterSize(64);
+                endText.setFillColor(sf::Color::Green);
+                endText.setPosition(windowWidth/2 - 150, windowHeight/2 - 100);
                 window.draw(endText);
                 
-                // Return to menu button
-                // ...
+                sf::Text resultText;
+                resultText.setFont(font);
+                resultText.setString("You defeated the final boss and escaped the dungeon!");
+                resultText.setCharacterSize(24);
+                resultText.setFillColor(sf::Color::White);
+                resultText.setPosition(windowWidth/2 - 250, windowHeight/2);
+                window.draw(resultText);
                 
-                break;}
+                // Show player stats
+                sf::Text statsText;
+                statsText.setFont(font);
+                statsText.setString("Final Stats\nHealth: " + std::to_string(p1.getHealth()) + 
+                                    "\nMoves used: " + std::to_string(numMoves));
+                statsText.setCharacterSize(20);
+                statsText.setFillColor(sf::Color::Yellow);
+                statsText.setPosition(windowWidth/2 - 100, windowHeight/2 + 100);
+                window.draw(statsText);
+                
+                // Auto-close after a few seconds
+                static sf::Clock endClock;
+                if (endClock.getElapsedTime().asSeconds() > 8.0f) {
+                    window.close();
+                }
+                endClock.restart();    
+            break;
+            }
         }
 
 
