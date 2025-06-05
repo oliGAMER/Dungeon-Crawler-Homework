@@ -61,7 +61,7 @@ void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon,
 }
 
 
-void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom, string& statusMessage, float& statusMessageTimer, bool& torchTaken, int& previousRoom) {
+void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom, string& statusMessage, float& statusMessageTimer, bool& torchTaken, int& previousRoom, Dungeon& dungeon) {
     buttons.clear(); // Clear previous buttons
     
     switch(roomNumber) {
@@ -152,7 +152,126 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 []() { }
             ));
         break;   
+
+        case 3: // Furnace room
+            // Common instruction text
+            buttons.push_back(Button(
+                windowWidth / 2 - 200, windowHeight / 2 - 80,
+                400, 40, &font, "You stumble upon an unused furnace",
+                sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                []() { }
+            ));
+            
+            if (p1.CheckInventory("torch")) {
+                // Player has torch - show option to light furnace
+                buttons.push_back(Button(
+                    windowWidth / 2 - 150, windowHeight / 2,
+                    300, 50, &font, "Use Torch to Light Furnace",
+                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                    [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon]() {
+                        p1.SetInventory("sword");
+                        statusMessage = "You lit the furnace and found a sword!";
+                        statusMessageTimer = 3.0f;
+                        
+                        numMoves++;
+                        currentRoom++;
+                        dungeon.PlayerPathAdd(currentRoom);
+                    }
+                ));
+            } else {
+                // Create leprechaun dialogue and trade options
+                static bool leprechaunAppeared = false;
+                static sf::Clock leprechaunTimer;
+                
+                if (!leprechaunAppeared) {
+                    // Reset timer on first entry to room without torch
+                    leprechaunTimer.restart();
+                    leprechaunAppeared = true;
+                    
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 200, windowHeight / 2,
+                        400, 40, &font, "You don't have anything to light the furnace",
+                        sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                        []() { }
+                    ));
+                    
+                    // Add a waiting message
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 100, windowHeight / 2 + 50,
+                        200, 50, &font, "Wait...",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&statusMessage, &statusMessageTimer, &previousRoom]() {
+                            statusMessage = "Waiting in the darkness...";
+                            statusMessageTimer = 1.0f;
+                            previousRoom = 0; // Reset previous room to indicate waiting
+                        }
+                    ));
+                } else if (leprechaunTimer.getElapsedTime().asSeconds() > 3.0f) {
+                    // After 3 seconds, show leprechaun offer
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 200, windowHeight / 2,
+                        400, 40, &font, "A leprechaun offers you a sword for your gold",
+                        sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                        []() { }
+                    ));
+                    
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 150, windowHeight / 2 + 50,
+                        140, 50, &font, "Accept Trade",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon, &t1]() {
+                            if (p1.CheckInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins")) {
+                                p1.SetInventory("sword");
+                                p1.RemoveInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
+                                statusMessage = "You traded your gold for a sword!";
+                            } else {
+                                statusMessage = "You don't have any gold to trade!";
+                            }
+                            statusMessageTimer = 3.0f;
+                            
+                            numMoves++;
+                            currentRoom++;
+                            dungeon.PlayerPathAdd(currentRoom);
+                        }
+                    ));
+                    
+                    buttons.push_back(Button(
+                        windowWidth / 2 + 10, windowHeight / 2 + 50,
+                        140, 50, &font, "Decline",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon]() {
+                            statusMessage = "You declined the leprechaun's offer. He vanishes.";
+                            statusMessageTimer = 3.0f;
+                            
+                            numMoves++;
+                            currentRoom++;
+                            dungeon.PlayerPathAdd(currentRoom);
+                        }
+                    ));
+                } else {
+                    // Still waiting for leprechaun to appear
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 200, windowHeight / 2,
+                        400, 40, &font, "You wait in the darkness...",
+                        sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
+                        []() { }
+                    ));
+                    
+                    buttons.push_back(Button(
+                        windowWidth / 2 - 100, windowHeight / 2 + 50,
+                        200, 50, &font, "Continue waiting...",
+                        sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+                        [&statusMessage, &statusMessageTimer, &previousRoom]() {
+                            statusMessage = "Still waiting...";
+                            statusMessageTimer = 1.0f;
+                            previousRoom = 0;
+                        }
+                    ));
+                }
+            }
+            break;
     }
+
 }
 
 int main() {
@@ -453,7 +572,7 @@ int main() {
                 // Create room-specific buttons if they don't exist
                 if (roomButtons.empty() || previousRoom != currentRoom) {
                     roomButtons.clear();
-                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom, statusMessage, statusMessageTimer, torchTaken, previousRoom);
+                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom, statusMessage, statusMessageTimer, torchTaken, previousRoom, dungeon);
                     previousRoom = currentRoom;
                 }
                 
