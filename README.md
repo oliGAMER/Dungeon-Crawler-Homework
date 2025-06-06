@@ -1,6 +1,5 @@
 # Project: Dungeon Escape
-**Course:** CSE142 - Object Oriented Programming Techniques (Spring '25)
-**Author:** AI Student
+**Author:** Omer Ibrahim Qazi
 
 ## 1. Project Description
 
