@@ -624,23 +624,23 @@ int main() {
             }
         }
 
-        if (currentState == PLAYING && playingState == DECISION_MAKING) {
-            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+        // if (currentState == PLAYING && playingState == DECISION_MAKING) {
+        //     if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        //         sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
                 
-                // Create the button here just for event handling
-                Button tempBackButton(
-                    windowWidth / 2 - 100, 
-                    windowHeight - 100,
-                    200, 50, &font, "Back to Game",
-                    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                    [&playingState]() {
-                        playingState = ROOM_NAVIGATION;
-                    }
-                );
-                tempBackButton.handleEvent(event, clickPosView);
-            }
-        }
+        //         // Create the button here just for event handling
+        //         Button tempBackButton(
+        //             windowWidth / 2 - 100, 
+        //             windowHeight - 100,
+        //             200, 50, &font, "Back to Game",
+        //             sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+        //             [&playingState]() {
+        //                 playingState = ROOM_NAVIGATION;
+        //             }
+        //         );
+        //         tempBackButton.handleEvent(event, clickPosView);
+        //     }
+        // }
 
         if (currentState == PLAYING && playingState == ROOM_NAVIGATION) {
             if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
@@ -821,8 +821,8 @@ int main() {
 
             checkStatsButton->update(mousePosView);
             checkStatsButton->render(window);
-                break;}
-                
+                break;
+        }
             case DECISION_MAKING:{
             // Display player stats
                 sf::Text statsTitle;
@@ -870,8 +870,7 @@ int main() {
                     window.draw(item);
                 }
                 
-                // Back button
-                Button backButton(
+                static Button backButton(
                     windowWidth / 2 - 100, 
                     windowHeight - 100,
                     200, 50, &font, "Back to Game",
@@ -881,15 +880,24 @@ int main() {
                     }
                 );
                 
+                // Update and render the button
                 backButton.update(mousePosView);
                 backButton.render(window);
                 
+                // Handle the button events right here
+                if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    backButton.handleEvent(event, clickPosView);
+                }
+                
+                break;
+            }
                 // Handle back button events
                 // if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
                 //     sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
                 //     backButton.handleEvent(event, clickPosView);
                 // }
-                    break;}
+                    // break;}
                 
             case COMBAT:{
                 // Enemy combat logic
