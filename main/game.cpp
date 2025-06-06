@@ -1,3 +1,4 @@
+// Headers for the game
 #include <iostream>
 #include <string>
 #include <vector>
@@ -12,13 +13,16 @@
 #include "../headers/Stack.h"
 #include <SFML/Graphics.hpp>
 #include "../headers/Button.h"
+#include "../headers/Leaderboard.h"
+#include <iomanip>
 
 using namespace std;
 
 enum GameState {
     MENU,
     PLAYING,
-    GAME_OVER
+    GAME_OVER,
+    LEADERBOARD
 };
 
 enum PlayingState {
@@ -31,11 +35,11 @@ enum PlayingState {
 };
 
 struct CombatEvent {
-    string source;
+    string source;  // whos intiaitng the action
     string target;  
-    string action;    
-    int value;        
-    int priority;    
+    string action;  // Type of action
+    int value;      // Numerical Value (Damage Amount)
+    int priority;   // Determines execution
     
     bool operator<(const CombatEvent& other) const {
         return priority < other.priority; 
@@ -74,7 +78,7 @@ void displayRoomInfo(sf::RenderWindow& window, sf::Font& font, Dungeon& dungeon,
 }
 
 
-void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom, string& statusMessage, float& statusMessageTimer, bool& torchTaken, int& previousRoom, Dungeon& dungeon) {
+void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, float windowWidth, float windowHeight, Player& p1, bool& level1Done, PlayingState& playingState, Treasure& t1, int& numMoves, int& currentRoom, string& statusMessage, float& statusMessageTimer, bool& torchTaken, int& previousRoom, Dungeon& dungeon,  sf::RenderWindow& window) {
     buttons.clear(); // Clear previous buttons
     
     switch(roomNumber) {
@@ -89,7 +93,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                         p1.SetInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
                         level1Done = true; // mark gold coins as taken
                         statusMessage = "You collected 5 gold coins!";
-                        statusMessageTimer = 3.0f;
+                        statusMessageTimer = 5.0f;
                     }
                     playingState = ROOM_NAVIGATION;
                 }
@@ -108,7 +112,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                         } else {
                             statusMessage = "Cannot carry more than one torch.";
                         }
-                        statusMessageTimer = 3.0f;
+                        statusMessageTimer = 5.0f;
                         playingState = ROOM_NAVIGATION;
                     }
                 ));
@@ -135,7 +139,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     } else {
                         statusMessage = "You swam across the pond.";
                     }
-                    statusMessageTimer = 3.0f;
+                    statusMessageTimer = 5.0f;
                     
                     numMoves++;
                     currentRoom++;
@@ -150,7 +154,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 [&p1, &numMoves, &playingState, &currentRoom, &statusMessage, &statusMessageTimer]() { 
                     p1.SetHealth(p1.getHealth() - 10);
                     statusMessage = "Ouch!!! That jump almost cost you a knee.";
-                    statusMessageTimer = 3.0f;
+                    statusMessageTimer = 5.0f;
                     
                     numMoves++;
                     currentRoom++;
@@ -184,7 +188,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon]() {
                         p1.SetInventory("sword");
                         statusMessage = "You lit the furnace and found a sword!";
-                        statusMessageTimer = 3.0f;
+                        statusMessageTimer = 5.0f;
                         
                         numMoves++;
                         currentRoom++;
@@ -210,12 +214,12 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     
                     // Add a waiting message
                     buttons.push_back(Button(
-                        windowWidth / 2 - 100, windowHeight / 2 + 50,
-                        200, 50, &font, "Wait...",
+                        windowWidth / 2 - 150, windowHeight / 2 + 50,
+                        300, 50, &font, "Wait...",
                         sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
                         [&statusMessage, &statusMessageTimer, &previousRoom]() {
                             statusMessage = "Waiting in the darkness...";
-                            statusMessageTimer = 1.0f;
+                            statusMessageTimer = 5.0f;
                             previousRoom = 0; // Reset previous room to indicate waiting
                         }
                     ));
@@ -229,8 +233,8 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     ));
                     
                     buttons.push_back(Button(
-                        windowWidth / 2 - 150, windowHeight / 2 + 50,
-                        140, 50, &font, "Accept Trade",
+                        windowWidth / 2 - 220, windowHeight / 2 + 50,
+                        200, 50, &font, "Accept Trade",
                         sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
                         [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon, &t1]() {
                             if (p1.CheckInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins")) {
@@ -240,7 +244,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                             } else {
                                 statusMessage = "You don't have any gold to trade!";
                             }
-                            statusMessageTimer = 3.0f;
+                            statusMessageTimer = 5.0f;
                             
                             numMoves++;
                             currentRoom++;
@@ -249,12 +253,12 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     ));
                     
                     buttons.push_back(Button(
-                        windowWidth / 2 + 10, windowHeight / 2 + 50,
+                        windowWidth / 2 + 40, windowHeight / 2 + 50,
                         140, 50, &font, "Decline",
                         sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
                         [&numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon]() {
                             statusMessage = "You declined the leprechaun's offer. He vanishes.";
-                            statusMessageTimer = 3.0f;
+                            statusMessageTimer = 5.0f;
                             
                             numMoves++;
                             currentRoom++;
@@ -265,18 +269,18 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     // Still waiting for leprechaun to appear
                     buttons.push_back(Button(
                         windowWidth / 2 - 200, windowHeight / 2,
-                        400, 40, &font, "You wait in the darkness...",
+                        500, 50, &font, "You wait in the darkness...",
                         sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
                         []() { }
                     ));
                     
                     buttons.push_back(Button(
-                        windowWidth / 2 - 100, windowHeight / 2 + 50,
-                        200, 50, &font, "Continue waiting...",
+                        windowWidth / 2 - 150, windowHeight / 2 + 50,
+                        300, 50, &font, "Continue waiting...",
                         sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
                         [&statusMessage, &statusMessageTimer, &previousRoom]() {
                             statusMessage = "Still waiting...";
-                            statusMessageTimer = 1.0f;
+                            statusMessageTimer = 5.0f;
                             previousRoom = 0;
                         }
                     ));
@@ -296,24 +300,44 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                     windowWidth / 2 - 100, windowHeight / 2,
                     200, 50, &font, "Fight!",
                     sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
-                    [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon, &t1, &playingState]() {
-                        // Create combat event queue
+                    [&p1, &numMoves, &currentRoom, &statusMessage, &statusMessageTimer, &dungeon, &t1, &playingState, &font, &windowWidth, &windowHeight, &window]() {
+
+                    auto displayCombatResults = [&window, &font, windowWidth, windowHeight](const std::string& results) {
+                        sf::Text combatText;
+                        combatText.setFont(font);
+                        combatText.setString(results);
+                        combatText.setCharacterSize(28);
+                        combatText.setFillColor(sf::Color::Red);
+                    
+                        // Center the text
+                        sf::FloatRect textRect = combatText.getLocalBounds();
+                        combatText.setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+                        combatText.setPosition(windowWidth / 2.0f, windowHeight / 2.0f - 50);
+                    
+                    // Draw a background for better visibility
+                        sf::RectangleShape background;
+                        background.setSize(sf::Vector2f(textRect.width + 40, textRect.height + 40));
+                        background.setFillColor(sf::Color(0, 0, 0, 200));
+                        background.setOrigin(background.getSize().x / 2.0f, background.getSize().y / 2.0f);
+                        background.setPosition(windowWidth / 2.0f, windowHeight / 2.0f - 50);
+                    
+                    window.draw(background);
+                    window.draw(combatText);
+                    window.display();
+                    
+                    // Pause briefly to show combat results
+                    sf::sleep(sf::seconds(3.0f));
+                };
                         priority_queue<CombatEvent> combatQueue;
                         
-                        // Initialize combat events based on player equipment
                         if (p1.CheckInventory("sword")) {
-                            // Goblin attacks first (priority 10)
                             combatQueue.push({"Goblin", "Player", "attack", 10, 10});
-                            // Player attacks with sword (priority 5)
                             combatQueue.push({"Player", "All Enemies", "sword_attack", 100, 5});
                         } else {
-                            // Creeper attacks first (priority 15)  
                             combatQueue.push({"Creeper", "Player", "explosion", 20, 15});
-                            // Player attacks with bare hands (priority 3)
                             combatQueue.push({"Player", "All Enemies", "hand_attack", 50, 3});
                         }
                         
-                        // Process all combat events
                         string combatResults = "";
                         while (!combatQueue.empty()) {
                             CombatEvent event = combatQueue.top();
@@ -341,10 +365,22 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                             combatQueue.push({"Merchant", "Player", "offer_potion", 20, 1});
                             combatResults += "\nA merchant appears and offers a healing potion!";
                         }
+
+                        displayCombatResults(combatResults);
+
+
+                        // // Make combat results more prominent
+                        // sf::Text combatText;
+                        // combatText.setFont(font);
+                        // combatText.setString(combatResults);
+                        // combatText.setCharacterSize(28);  // Larger text
+                        // combatText.setFillColor(sf::Color::Red);  // More visible color
+                        // sf::FloatRect textRect = combatText.getLocalBounds();
+                        // combatText.setOrigin(textRect.width / 2, 0);
+                        // combatText.setPosition(windowWidth / 2, windowHeight / 2 - 100);
                         
                         statusMessage = combatResults;
-                        statusMessageTimer = 5.0f;
-                        
+                        statusMessageTimer = 5.0f; 
                         numMoves++;
                         currentRoom++;
                         playingState = ROOM_NAVIGATION;
@@ -352,15 +388,7 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                 ));
             break;
             
-            case 5: // Final room
-                buttons.push_back(Button(
-                    windowWidth / 2 - 200, windowHeight / 2 - 80,
-                    400, 40, &font, "The Final Boss awaits...",
-                    sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0),
-                    []() { }
-                ));
-                
-                // Add boss fight button
+            case 5: 
                 buttons.push_back(Button(
                     windowWidth / 2 - 100, windowHeight / 2,
                     200, 50, &font, "Confront Boss",
@@ -371,18 +399,26 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
                         statusMessageTimer = 2.0f;
                     }
                 ));
-                
-                // Add healing potion button if player has gold
+
                 if (p1.CheckInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins")) {
                     buttons.push_back(Button(
                         windowWidth / 2 - 150, windowHeight / 2 + 100,
                         300, 50, &font, "Buy Healing Potion (5 Gold)",
                         sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
                         [&p1, &statusMessage, &statusMessageTimer, &t1]() {
-                            p1.RemoveInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
-                            p1.SetHealth(p1.getHealth() + 20);
-                            statusMessage = "You used your gold to buy a healing potion! +20 Health";
-                            statusMessageTimer = 3.0f;
+                            // Only allow purchase if health isn't full
+                            if (p1.getHealth() < 100) {
+                                p1.RemoveInventory(to_string(t1.GetQuantity()) + " " + t1.GetType() + " coins");
+                                
+                                // Calculate how much to heal (don't exceed 100)
+                                int healAmount = min(20, 100 - p1.getHealth());
+                                p1.SetHealth(p1.getHealth() + healAmount);
+                                
+                                statusMessage = "You used your gold to buy a healing potion! +" + to_string(healAmount) + " Health";
+                            } else {
+                                statusMessage = "Your health is already full!";
+                            }
+                            statusMessageTimer = 5.0f;
                         }
                     ));
                 }
@@ -392,6 +428,8 @@ void createRoomButtons(int roomNumber, vector<Button>& buttons, sf::Font& font, 
 }
 
 int main() {
+
+
     // ------------------------------------------------------------------------- Initialization -------------------------------------------------------------------------
     // for window creation
     sf::RenderWindow window;
@@ -418,7 +456,6 @@ int main() {
         std::cout << "Error loading font" << std::endl;
         return -1;
     }
-
 
     Player p1;
     p1.SetHealth(100);
@@ -499,7 +536,8 @@ int main() {
     //------------------------------------------------------------------------- Window Generation -------------------------------------------------------------------------
     // Sets the initial game state
     GameState currentState = MENU;
-
+    ScoreLeaderboard scoreBoard("leaderboard_score.csv");
+    EfficiencyLeaderboard efficiencyBoard("leaderboard_efficiency.csv");
     // Create buttons for the menu
     Button startButton(
         windowWidth / 2 - 100,
@@ -511,6 +549,16 @@ int main() {
         }
     );
 
+    Button leaderboardButton(
+    windowWidth / 2 - 100,
+    windowHeight * 0.5f,
+    200, 50, &font, "Leaderboard",
+    sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+    [&currentState]() { 
+        currentState = LEADERBOARD;
+        }
+    );
+    
     Button exitButton(
         windowWidth / 2 - 100,
         windowHeight * 0.6f,
@@ -543,6 +591,7 @@ int main() {
             if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
                 startButton.handleEvent(event, clickPosView);
+                leaderboardButton.handleEvent(event, clickPosView);
                 exitButton.handleEvent(event, clickPosView);
             }
         }
@@ -563,7 +612,9 @@ int main() {
                 }
                 // Regular character input
                 else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-                    currentInput += static_cast<char>(event.text.unicode);
+                    if (currentInput.length() < 20) { 
+                        currentInput += static_cast<char>(event.text.unicode);
+                    }
                 }
             }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
@@ -613,6 +664,7 @@ int main() {
         startButton.update(mousePosView);
         exitButton.update(mousePosView);
     }
+    
 
     // Clear the window and draw UI elements
     window.clear(sf::Color(30, 30, 30));
@@ -620,7 +672,10 @@ int main() {
     if (currentState == MENU) {
         window.draw(titleText);
         startButton.render(window);
+        leaderboardButton.render(window); 
+        leaderboardButton.update(mousePosView);
         exitButton.render(window);
+
     } else if (currentState == PLAYING) {
         // Intialize on first entry to PLAYING state
         static bool gameInitialized = false;
@@ -666,10 +721,12 @@ int main() {
                     window.draw(welcomeText);
                     
                     // Check for space key to start game
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                    static sf::Clock introClock;
+                    if (introClock.getElapsedTime().asSeconds() > 3.0f) {
                         playingState = ROOM_NAVIGATION;
                         currentRoom = 1;
                         dungeon.PlayerPathAdd(currentRoom);
+                        introClock.restart();
                     }
                 }
                 break;
@@ -689,7 +746,7 @@ int main() {
                 // Create room-specific buttons if they don't exist
                 if (roomButtons.empty() || previousRoom != currentRoom) {
                     roomButtons.clear();
-                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom, statusMessage, statusMessageTimer, torchTaken, previousRoom, dungeon);
+                    createRoomButtons(currentRoom, roomButtons, font, windowWidth, windowHeight, p1, level1Done, playingState, t1, numMoves, currentRoom, statusMessage, statusMessageTimer, torchTaken, previousRoom, dungeon, window);
                     previousRoom = currentRoom;
                 }
                 
@@ -838,61 +895,68 @@ int main() {
                 // Enemy combat logic
                 break;
             }
-            case BOSS_FIGHT:{
-                // Final boss fight logic with reaction timer
+            case BOSS_FIGHT: {
                 static sf::Clock bossReactionClock;
                 static bool bossPreparationStarted = false;
                 static bool bossPromptShown = false;
                 static bool bossResultDetermined = false;
                 
                 if (!bossPreparationStarted) {
-                    // Initial setup
                     bossPreparationStarted = true;
                     bossPromptShown = false;
                     bossResultDetermined = false;
                     bossReactionClock.restart();
                     
-                    // Check if player has sword
                     if (!p1.CheckInventory("sword")) {
                         statusMessage = "You have no weapon! The boss crushes you.";
-                        statusMessageTimer = 3.0f;
+                        statusMessageTimer = 5.0f;
                         p1.SetHealth(0);
                         currentState = GAME_OVER;
                         break;
                     }
                 }
                 
-                // Draw boss
-                sf::RectangleShape bossShape(sf::Vector2f(150, 200));
-                bossShape.setFillColor(sf::Color(150, 0, 0));
-                bossShape.setPosition(windowWidth/2 - 75, 150);
-                window.draw(bossShape);
+                sf::Text bossTitle;
+                bossTitle.setFont(font);
+                bossTitle.setString("The Final Boss appears!");
+                bossTitle.setCharacterSize(72);  
+                bossTitle.setFillColor(sf::Color::Red);
+                
+                sf::FloatRect titleRect = bossTitle.getLocalBounds();
+                bossTitle.setOrigin(titleRect.width / 2, 0);
+                bossTitle.setPosition(windowWidth/2, 50);
+                window.draw(bossTitle);
+                
+                sf::Text prepareText;
+                prepareText.setFont(font);
+                prepareText.setString("Prepare yourself...");
+                prepareText.setCharacterSize(64);  
+                prepareText.setFillColor(sf::Color::Red);
+                
+                // Center and position below the title
+                sf::FloatRect prepRect = prepareText.getLocalBounds();
+                prepareText.setOrigin(prepRect.width / 2, 0);
+                prepareText.setPosition(windowWidth/2, 140);  
+                window.draw(prepareText);
+                
+                sf::Text instructionText;
+                instructionText.setFont(font);
+                instructionText.setString("You have to slash your sword when prompted!");
+                instructionText.setCharacterSize(32); 
+                instructionText.setFillColor(sf::Color::White);
+                
+                sf::FloatRect instRect = instructionText.getLocalBounds();
+                instructionText.setOrigin(instRect.width / 2, instRect.height / 2);
+                instructionText.setPosition(windowWidth/2, windowHeight/2);  
+                window.draw(instructionText);
                 
                 if (!bossPromptShown) {
-                    // Preparation phase
-                    sf::Text prepText;
-                    prepText.setFont(font);
-                    prepText.setString("The Final Boss appears!\nPrepare yourself...");
-                    prepText.setCharacterSize(32);
-                    prepText.setFillColor(sf::Color::Red);
-                    prepText.setPosition(windowWidth/2 - 200, windowHeight/2 + 50);
-                    window.draw(prepText);
-                    
-                    sf::Text infoText;
-                    infoText.setFont(font);
-                    infoText.setString("You have to slash your sword when prompted!");
-                    infoText.setCharacterSize(24);
-                    infoText.setFillColor(sf::Color::White);
-                    infoText.setPosition(windowWidth/2 - 240, windowHeight/2 + 120);
-                    window.draw(infoText);
-                    
-                    // After 3 seconds of preparation, show the prompt
                     if (bossReactionClock.getElapsedTime().asSeconds() > 3.0f) {
                         bossPromptShown = true;
-                        bossReactionClock.restart(); // Reset for reaction timing
+                        bossReactionClock.restart(); 
                     }
-                } else if (!bossResultDetermined) {
-                    // NOW! Prompt - player needs to react
+                } 
+                else if (!bossResultDetermined) {
                     sf::Text attackText;
                     attackText.setFont(font);
                     attackText.setString("NOW! Press F to slash your sword!");
@@ -901,30 +965,26 @@ int main() {
                     attackText.setPosition(windowWidth/2 - 250, windowHeight/2 + 50);
                     window.draw(attackText);
                     
-                    // Check for F key press
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
                         float reactionTime = bossReactionClock.getElapsedTime().asSeconds();
                         bossResultDetermined = true;
                         
                         if (reactionTime < 3.0f) {
-                            // Success - player reacted in time
                             statusMessage = "You slash the boss just in time and win the fight!";
-                            statusMessageTimer = 3.0f;
+                            statusMessageTimer = 5.0f;
                             playingState = GAME_END;
                         } else {
-                            // Too slow
                             statusMessage = "You hesitated... The boss crushes you!";
-                            statusMessageTimer = 3.0f;
+                            statusMessageTimer = 5.0f;
                             p1.SetHealth(0);
                             currentState = GAME_OVER;
                         }
                     }
                     
-                    // If player doesn't react within 5 seconds, they lose
                     if (bossReactionClock.getElapsedTime().asSeconds() > 5.0f) {
                         bossResultDetermined = true;
                         statusMessage = "You failed to react in time! The boss crushes you!";
-                        statusMessageTimer = 3.0f;
+                        statusMessageTimer = 5.0f;
                         p1.SetHealth(0);
                         currentState = GAME_OVER;
                     }
@@ -964,7 +1024,15 @@ int main() {
                 if (endClock.getElapsedTime().asSeconds() > 8.0f) {
                     window.close();
                 }
-                endClock.restart();    
+                endClock.restart();   
+                
+                int finalScore = p1.getHealth() * 10 + (7 - numMoves) * 20;  // Calculate score
+                bool completed = true;
+                PlayerRecord newRecord(name, finalScore, p1.getHealth(), numMoves, completed);
+                scoreBoard.addRecord(newRecord);
+                efficiencyBoard.addRecord(newRecord);
+                scoreBoard.saveToFile();
+                efficiencyBoard.saveToFile();
             break;
             }
         }
@@ -993,11 +1061,24 @@ int main() {
         // Use a static timer for the GAME_OVER state
         static sf::Clock gameOverClock;
         static bool gameOverClockStarted = false;
+        static bool recordedGameOver = false;
         
         if (!gameOverClockStarted) {
             gameOverClock.restart();
             gameOverClockStarted = true;
         }
+    
+    if (!recordedGameOver) {
+        int finalScore = p1.getHealth() * 5;  // Lower score for incomplete games
+        bool completed = false;
+        PlayerRecord newRecord(name, finalScore, p1.getHealth(), numMoves, completed);
+        
+        scoreBoard.addRecord(newRecord);
+        efficiencyBoard.addRecord(newRecord);
+        scoreBoard.saveToFile();
+        efficiencyBoard.saveToFile();
+        recordedGameOver = true;
+    }
         
         // Draw Game Over text
         sf::Text gameOverText;
@@ -1027,17 +1108,115 @@ int main() {
         }
     }
 
+    else if (currentState == LEADERBOARD) {
+        window.clear(sf::Color(30, 30, 30));
+        
+        sf::Text leaderboardTitle;
+        leaderboardTitle.setFont(font);
+        leaderboardTitle.setString("LEADERBOARDS");
+        leaderboardTitle.setCharacterSize(40);
+        leaderboardTitle.setFillColor(sf::Color::White);
+        leaderboardTitle.setPosition(windowWidth / 2 - 150, 50);
+        window.draw(leaderboardTitle);
+        scoreBoard.loadFromFile();
+        
+        sf::Text scoreTitle;
+        scoreTitle.setFont(font);
+        scoreTitle.setString("TOP SCORES");
+        scoreTitle.setCharacterSize(28);
+        scoreTitle.setFillColor(sf::Color::Yellow);
+        scoreTitle.setPosition(windowWidth / 2 - 80, 120);
+        window.draw(scoreTitle);
+        
+        sf::Text headerText;
+        headerText.setFont(font);
+        headerText.setString("Rank | Name             | Score | Health | Moves | Status");
+        headerText.setCharacterSize(18);
+        headerText.setFillColor(sf::Color::Green);
+        headerText.setPosition(windowWidth / 2 - 250, 160);
+        window.draw(headerText);
+        
+        int maxEntries = 7;
+        int y = 190;
+        int rank = 1;
+        
+        const std::vector<PlayerRecord>& records = scoreBoard.getRecords();
+        
+        for (const auto& record : records) {
+            if (rank > maxEntries) break;
+            
+            std::string completionStatus = record.completed ? "Complete" : "Failed";
+            
+            sf::Text recordText;
+            recordText.setFont(font);
+            
+            std::string displayText = 
+                std::to_string(rank) + "    | " + 
+                (record.name.length() > 16 ? record.name.substr(0, 16) : record.name + std::string(16 - record.name.length(), ' ')) + " | " +
+                std::to_string(record.score) + "   | " +
+                std::to_string(record.health) + "    | " +
+                std::to_string(record.movesUsed) + "    | " +
+                completionStatus;
+            
+            recordText.setString(displayText);
+            recordText.setCharacterSize(16);
+            recordText.setFillColor(sf::Color::White);
+            recordText.setPosition(windowWidth / 2 - 250, y);
+            window.draw(recordText);
+            
+            y += 30;
+            rank++;
+        }
+        
+        Button backButton(
+            windowWidth / 2 - 100,
+            windowHeight - 100,
+            200, 50, &font, "Back to Menu",
+            sf::Color(70, 70, 70), sf::Color(150, 150, 150), sf::Color(20, 20, 20),
+            [&currentState]() { 
+                currentState = MENU;
+            }
+        );
+        
+        backButton.update(mousePosView);
+        backButton.render(window);
+        
+        if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+            sf::Vector2f clickPosView = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+            backButton.handleEvent(event, clickPosView);
+        }
+    }
+
     if (!statusMessage.empty() && statusMessageTimer > 0.0f) {
         sf::Text feedbackText;
         feedbackText.setFont(font);
         feedbackText.setString(statusMessage);
         feedbackText.setCharacterSize(24);
         feedbackText.setFillColor(sf::Color::Yellow);
-        feedbackText.setPosition(windowWidth/2 - 150, windowHeight - 150);
+        
+        // Make more prominent by centering horizontally and adding background
+        sf::FloatRect textRect = feedbackText.getLocalBounds();
+        feedbackText.setOrigin(textRect.width / 2, 0);
+        feedbackText.setPosition(windowWidth / 2, windowHeight - 150);
+        
+        // Add background for better visibility
+        sf::RectangleShape msgBackground;
+        msgBackground.setSize(sf::Vector2f(textRect.width + 40, textRect.height + 20));
+        msgBackground.setFillColor(sf::Color(0, 0, 0, 180));
+        msgBackground.setOrigin(msgBackground.getSize().x / 2, 0);
+        msgBackground.setPosition(windowWidth / 2, windowHeight - 155);
+        
+        window.draw(msgBackground);
         window.draw(feedbackText);
-    
-        // Update timer
-        statusMessageTimer -= statusClock.restart().asSeconds();
+        
+        // Use a fixed time step for more consistent timing
+        static sf::Clock frameTimer;
+        float elapsed = frameTimer.restart().asSeconds();
+        
+        // Cap the elapsed time to prevent large jumps
+        if (elapsed > 0.1f) elapsed = 0.1f;
+        
+        statusMessageTimer -= elapsed;
         if (statusMessageTimer <= 0.0f) {
             statusMessage = "";
         }
